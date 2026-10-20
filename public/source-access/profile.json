@@ -15,5 +15,22 @@
     280,
     280
   ],
-  "verification": "2026-10-20: original QR decoded with system reader; share link redirects to matching profile via login; original image preserved unchanged"
+  "verification": "2026-10-20: original QR decoded with system reader; share link redirects to matching profile via login; original image preserved unchanged",
+  "component_version": 2,
+  "xianyu": {
+    "display_name": "数码暴龙AI",
+    "original_card_sha256": "67094d2041215e1664d6f84b21018e6f4c15002c3981dab15b3a028b4f42bdf7",
+    "original_dimensions": [
+      1216,
+      2291
+    ],
+    "qr_viewbox": [
+      157,
+      1507,
+      214,
+      214
+    ],
+    "verification": "原始名片字节保留，系统读取未解码；尚未验证闲鱼App实扫。不猜测店铺链接。"
+  },
+  "style_approved_at": "2026-10-20"
 }
