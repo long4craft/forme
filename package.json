@@ -1,0 +1,1 @@
+{"name":"forme","version":"1.0.0","private":true,"type":"module","description":"FORME 形研运动 · 普拉提与健身工作室演示","scripts":{"build":"node build.mjs","dev":"python3 -m http.server 4325 --bind 127.0.0.1 --directory dist","check":"node --check app.js && node --check studio.js","test":"node --test tests/studio.test.mjs"},"license":"MIT"}

@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {today,addDays,sessions,fresh,balance,book,transition,ledger,bookingError,validState,sessionById} from '../studio.js';
+const now=new Date('2026-10-20T10:00:00+08:00'),day='2026-10-21',s=sessions(day);
+const reserve=(state,session=s[0],trial=false,id='record-1')=>book(state,session,'小林',trial,now,id);
+test('北京时间跨日及跨月日期运算',()=>{assert.equal(today(new Date('2026-10-20T17:00:00Z')),'2026-10-21');assert.equal(addDays('2026-10-31',1),'2026-11-01');});
+test('普通预约预扣、取消只返还一次，流水与余额一致',()=>{let x=reserve(fresh());assert.equal(balance(x),11);x=transition(x,'record-1','cancelled',now);assert.equal(balance(x),12);assert.equal(ledger(x).reduce((n,e)=>n+e.change,0),12);assert.throws(()=>transition(x,'record-1','cancelled',now));});
+test('签到不重复扣课时，签到记录不可取消',()=>{let x=reserve(fresh());x=transition(x,'record-1','attended',now);assert.equal(balance(x),11);assert.throws(()=>transition(x,'record-1','cancelled',now));});
+test('体验不扣课时、限一节有效体验、取消后可重约',()=>{let x=reserve(fresh(),s[0],true);assert.equal(balance(x),12);assert.match(bookingError(x,s[1],true,now),/限一节/);x=transition(x,'record-1','cancelled',now);assert.doesNotThrow(()=>reserve(x,s[1],true,'record-2'));});
+test('满班、重复预约、交叉时间段均拦截',()=>{assert.throws(()=>reserve(fresh(),s[3]),/已满/);const x=reserve(fresh(),s[1]);assert.match(bookingError(x,s[1],false,now),/已经预约/);assert.match(bookingError(x,s[2],false,now),/重叠/);assert.equal(bookingError(x,s[4],false,now),'');});
+test('余额耗尽后禁止普通预约，取消恢复额度',()=>{let x=fresh();for(let i=0;i<12;i++)x=reserve(x,sessions(addDays(day,i))[0],false,'rec-'+i);assert.equal(balance(x),0);assert.match(bookingError(x,sessions(addDays(day,12))[0],false,now),/课时不足/);x=transition(x,'rec-0','cancelled',now);assert.equal(balance(x),1);assert.equal(bookingError(x,sessions(addDays(day,12))[0],false,now),'');});
+test('未来 14 天边界、已开始及无效场次拦截',()=>{assert.match(bookingError(fresh(),sessions('2026-10-20')[0],false,now),/已经开始/);assert.match(bookingError(fresh(),sessions('2026-11-04')[0],false,now),/14 天/);assert.equal(bookingError(fresh(),sessions('2026-11-03')[0],false,now),'');assert.match(bookingError(fresh(),null,false,now),/有效/);assert.equal(sessionById('oops'),null);});
+test('称呼空白与过长被拒绝，安全存储不假装认证',()=>{assert.throws(()=>book(fresh(),s[0],'  ',false,now,'x'),/称呼/);assert.throws(()=>book(fresh(),s[0],'x'.repeat(21),false,now,'x'),/称呼/);assert.equal(validState(reserve(fresh())),true);assert.equal(validState({version:1,alias:'x',records:[{}]}),false);assert.equal(validState(null),false);});

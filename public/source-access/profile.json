@@ -1,0 +1,19 @@
+{
+  "display_name": "数码暴龙AI",
+  "xiaohongshu_number": "384338020",
+  "profile_id": "556b22b967bc65522ef3fc8a",
+  "profile_url": "https://www.xiaohongshu.com/user/profile/556b22b967bc65522ef3fc8a",
+  "original_qr_payload": "http://xhslink.com/m/9QQ9YfPn7Zf",
+  "original_card_sha256": "524735d8565e2765bd8bab0d47d3734688239ebe2433b5f251566c2394c73893",
+  "original_dimensions": [
+    987,
+    1347
+  ],
+  "qr_viewbox": [
+    650,
+    1010,
+    280,
+    280
+  ],
+  "verification": "2026-10-20: original QR decoded with system reader; share link redirects to matching profile via login; original image preserved unchanged"
+}
